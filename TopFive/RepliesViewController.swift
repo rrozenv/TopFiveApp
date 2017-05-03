@@ -40,7 +40,6 @@ class RepliesViewController: UIViewController {
     var article: Article! {
         didSet {
             self.articleID = article.id
-            articleImage.image = article.image
             titleLabel.text = article.title
         }
     }

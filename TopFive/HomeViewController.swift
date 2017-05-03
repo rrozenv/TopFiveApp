@@ -8,22 +8,26 @@
 
 import UIKit
 
-class HomeViewController: UIViewController {
+final class HomeViewController: UIViewController {
     
-    let tableView = UITableView()
-    let cellID = "cellID"
-    let dataShare = ArticleDataStorage.articleDataStore
+    fileprivate let tableView = UITableView()
+    fileprivate let cellID = "cellID"
+    fileprivate let dataShare = ArticleDataStorage.articleDataStore
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = UIColor.white
         setupTableView()
-        
-        dataShare.createAllArticles { (didCreateArticles) in
-            if didCreateArticles {
-                OperationQueue.main.addOperation({
+        updateTableViewWithArticlesFrom(sources: [Source.businessInsider, Source.buzzFeed, Source.espn])
+    }
+    
+    func updateTableViewWithArticlesFrom(sources: [Source]) {
+        dataShare.createArticlesFor(sources) { (isSuccess) in
+            if isSuccess {
+                self.dataShare.allArticles.sort(by: { $0.publishedDate! > $1.publishedDate! })
+                DispatchQueue.main.async {
                     self.tableView.reloadData()
-                })
+                }
             }
         }
     }
@@ -32,7 +36,7 @@ class HomeViewController: UIViewController {
 
 extension HomeViewController: UITableViewDataSource, UITableViewDelegate {
     
-    func setupTableView() {
+    fileprivate func setupTableView() {
         view.addSubview(tableView)
         tableView.register(HomeArticleCell.self, forCellReuseIdentifier: cellID)
         tableView.delegate = self

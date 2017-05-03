@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-class Article {
+final class Article {
     let id: String?
     let author: String?
     let title: String
@@ -17,9 +17,7 @@ class Article {
     let url: String
     let urlToImage: String
     let publishedAt: String?
-    var image: UIImage?
     var numberOfReplies: Int = 0
-    
     var publishedDate: Date? {
         guard let stringDate = publishedAt else { return nil }
         let dateFormatter = DateFormatter()
@@ -41,4 +39,5 @@ class Article {
         self.urlToImage = dict["urlToImage"] as? String ?? "No url image"
         self.publishedAt = publishedAt
     }
+
 }
