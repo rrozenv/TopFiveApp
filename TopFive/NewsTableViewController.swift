@@ -13,12 +13,26 @@ final class HomeViewController: UIViewController {
     fileprivate let tableView = UITableView()
     fileprivate let cellID = "cellID"
     fileprivate let dataShare = ArticleDataStorage.articleDataStore
+    fileprivate var sources = [Source]()
+    
+    required init(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)!
+    }
+    
+    override init(nibName nibNameOrNil: String!, bundle nibBundleOrNil: Bundle!) {
+        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+    }
+    
+    convenience init(sources: [Source]) {
+        self.init(nibName: nil, bundle: nil)
+        self.sources = sources
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = UIColor.white
         setupTableView()
-        updateTableViewWithArticlesFrom(sources: [Source.businessInsider, Source.buzzFeed, Source.espn])
+        updateTableViewWithArticlesFrom(sources: sources)
     }
     
     func updateTableViewWithArticlesFrom(sources: [Source]) {
@@ -43,6 +57,7 @@ extension HomeViewController: UITableViewDataSource, UITableViewDelegate {
         tableView.dataSource = self
         tableView.estimatedRowHeight = 256.0
         tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.separatorStyle = .none
         tableView.translatesAutoresizingMaskIntoConstraints = false
         
         tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
@@ -59,6 +74,7 @@ extension HomeViewController: UITableViewDataSource, UITableViewDelegate {
         let cell = tableView.dequeueReusableCell(withIdentifier: cellID, for: indexPath) as! HomeArticleCell
         cell.article = dataShare.allArticles[indexPath.row]
         cell.delegate = self
+        cell.selectionStyle = UITableViewCellSelectionStyle.none
         return cell
     }
     
@@ -73,9 +89,14 @@ extension HomeViewController: LoadViewControllerDelegate {
     }
     
     func loadRepliesViewController(_ article: Article) {
+        print("Loading replies vc")
         let repliesVC = RepliesViewController()
         repliesVC.article = article
         self.navigationController?.pushViewController(repliesVC, animated: false)
+    }
+    
+    func reloadTableView() {
+        self.tableView.reloadData()
     }
     
 }

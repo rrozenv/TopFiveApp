@@ -8,10 +8,11 @@
 
 import Foundation
 
-enum Source {
-    case businessInsider
-    case buzzFeed
-    case espn
+enum Source: String  {
+    case businessInsider = "#businessinsider"
+    case buzzFeed = "#buzzfeed"
+    case espn = "#espn"
+    case techCrunch = "#techcrunch"
     
     func getParameters() -> [String: String] {
         switch self {
@@ -33,11 +34,31 @@ enum Source {
                 "sortBy": "top",
                 "apiKey": "\(Secrets.apiKey)"
             ]
+        case .techCrunch:
+            return [
+                "source": "techcrunch",
+                "sortBy": "top",
+                "apiKey": "\(Secrets.apiKey)"
+            ]
+        }
+    }
+    
+    func getCategoryLabel() -> String {
+        switch self {
+        case .businessInsider:
+            return "#businessinsider"
+        case .buzzFeed:
+            return "#buzzfeed"
+        case .espn:
+            return "#espn"
+        case .techCrunch:
+            return "#techcrunch"
         }
     }
 }
 
 final class ArticleDataStorage {
+    
     static let articleDataStore = ArticleDataStorage()
     var allArticles = [Article]()
     private init () { }
@@ -46,9 +67,7 @@ final class ArticleDataStorage {
         source.forEach { (source) in
             APIManager.getRequestFor(source) { [weak self] (APIResponse) in
                 self?.checkAPIResponse(APIResponse) { (isSuccess) in
-                    if isSuccess {
-                        completion(true)
-                    }
+                    isSuccess ? completion(true) : completion(false)
                 }
             }
         }
@@ -57,12 +76,13 @@ final class ArticleDataStorage {
     private func checkAPIResponse(_ APIResponse: APIResponse, completion: (Bool) -> Void) {
         switch APIResponse {
         case .success(let JSON):
-            JSON.forEach({ (dict) in
-                let article = Article(dict: dict)
-                if article.publishedDate != nil {
-                   self.allArticles.append(article)
+            guard let source = JSON["source"] as? String else { completion(false); return }
+            guard let articlesDict = JSON["articles"] as? [[String: Any]] else { completion(false); return }
+            for article in articlesDict {
+                if let article = Article(source: source, dict: article) {
+                    self.allArticles.append(article)
                 }
-            })
+            }
             !self.allArticles.isEmpty ? completion(true) : completion(false)
         case .badJSONRequest(_):
             completion(false)

@@ -11,6 +11,7 @@ import UIKit
 protocol LoadViewControllerDelegate: class {
     func loadWebView(_ article: Article)
     func loadRepliesViewController(_ article: Article)
+    func reloadTableView()
 }
 
 class HomeArticleCell: UITableViewCell {
@@ -76,6 +77,7 @@ class HomeArticleCell: UITableViewCell {
     var article: Article! {
         didSet {
             articleImage.setImage(urlString: article.urlToImage)
+            categoryLabel.text = article.source?.rawValue
             titleLabel.text = article.title.capitalized
             descriptionLabel.text = article.description
             heartsLabel.text = "0 likes"

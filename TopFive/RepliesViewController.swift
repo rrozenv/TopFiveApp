@@ -40,7 +40,8 @@ class RepliesViewController: UIViewController {
     var article: Article! {
         didSet {
             self.articleID = article.id
-            titleLabel.text = article.title
+            titleLabel.text = article.title.capitalized
+            articleImage.setImage(urlString: article.urlToImage)
         }
     }
     
@@ -60,14 +61,10 @@ class RepliesViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        if let articleID = article.id {
-            
-            FirebaseManager.fetchPosts(articleID: articleID, completion: { (posts) in
-                self.posts = posts
-                self.tableView.reloadData()
-            })
-            
-        }
+        FirebaseManager.fetchPosts(articleID: article.id, completion: { (posts) in
+            self.posts = posts
+            self.tableView.reloadData()
+        })
         
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: Notification.Name.UIKeyboardWillShow, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: Notification.Name.UIKeyboardWillHide, object: nil)
@@ -151,9 +148,10 @@ extension RepliesViewController: UITextFieldDelegate {
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        if let userId = curretUserUID, let postText = postTextField.text, let articleID = article.id {
+        if let userId = curretUserUID, let postText = postTextField.text {
             self.article.numberOfReplies += 1
-            FirebaseManager.createPost(articleID: articleID, userId: userId, userName: userName!, content: postText, articleReplies: article.numberOfReplies)
+            FirebaseManager.createPost(articleID: article.id, userId: userId, userName: userName!, content: postText, articleReplies: article.numberOfReplies)
+            delegate?.reloadTableView()
             textField.resignFirstResponder()
             postTextField.text = nil
             return true
@@ -189,7 +187,7 @@ extension RepliesViewController {
         borderView.translatesAutoresizingMaskIntoConstraints = false
         borderView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
         borderView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
-        borderView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+        borderView.topAnchor.constraint(equalTo: self.topLayoutGuide.bottomAnchor).isActive = true
         borderView.heightAnchor.constraint(equalToConstant: 6.0).isActive = true
     }
     

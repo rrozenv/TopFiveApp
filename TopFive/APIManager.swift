@@ -9,7 +9,7 @@
 import Foundation
 import Alamofire
 
-typealias JSON = [[String: Any]]
+typealias JSON = [String: Any]
 
 final class APIManager {
 
@@ -18,9 +18,8 @@ final class APIManager {
     
     class func getRequestFor(_ source: Source, completion: @escaping (APIResponse) -> Void) {
         Alamofire.request(baseURL, method: .get, parameters: source.getParameters()).responseJSON { (response) in
-            if let dict = response.result.value as? [String: Any],
-               let JSON = dict["articles"] as? JSON {
-                    completion(.success(JSON))
+            if let JSON = response.result.value as? JSON {
+                completion(.success(JSON))
             }
         }
     }
