@@ -46,6 +46,8 @@ class RepliesViewController: UIViewController {
     }
     
     weak var delegate: LoadViewControllerDelegate?
+    weak var replyDelegate: ReplyCountDelegate?
+    var currentReplyCount: Int = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -62,9 +64,15 @@ class RepliesViewController: UIViewController {
         super.viewWillAppear(animated)
         
         FirebaseManager.fetchPosts(articleID: article.id, completion: { (posts) in
+            print("fetching posts")
             self.posts = posts
             self.tableView.reloadData()
         })
+        
+        FirebaseManager.fetchReplyCount(articleID: article.id) { (replyCount) in
+            self.currentReplyCount = replyCount
+            print("just fetched reply count \(self.currentReplyCount)")
+        }
         
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: Notification.Name.UIKeyboardWillShow, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: Notification.Name.UIKeyboardWillHide, object: nil)
@@ -108,13 +116,14 @@ extension RepliesViewController: UITextFieldDelegate {
         textFieldBottomConstraint.isActive = true
     }
     
-    func keyboardWillShow(_ notification:Notification) {
+    func keyboardWillShow(_ notification: Notification) {
         
         checkIfUserIsLoggedIn { (isLoggedIn) in
-            
             if isLoggedIn {
                 self.adjustingHeight(true, notification: notification)
-                self.userName = UserDefaults.standard.string(forKey: "userName")!
+                if let userName = UserDefaults.standard.string(forKey: "userName") {
+                    self.userName = userName
+                }
                 self.curretUserUID = FIRAuth.auth()?.currentUser?.uid
                 
                 let tap: UITapGestureRecognizer = UITapGestureRecognizer(
@@ -149,9 +158,11 @@ extension RepliesViewController: UITextFieldDelegate {
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if let userId = curretUserUID, let postText = postTextField.text {
-            self.article.numberOfReplies += 1
-            FirebaseManager.createPost(articleID: article.id, userId: userId, userName: userName!, content: postText, articleReplies: article.numberOfReplies)
-            delegate?.reloadTableView()
+            currentReplyCount += 1
+            FirebaseManager.updateReplyCount(articleID: article.id, articleReplies: currentReplyCount)
+            FirebaseManager.createPost(articleID: article.id, userId: userId, userName: userName!, content: postText)
+            article.numberOfReplies += 1
+            NotificationCenter.default.post(name: Notification.Name("replyCount"), object: nil)
             textField.resignFirstResponder()
             postTextField.text = nil
             return true
@@ -265,6 +276,7 @@ extension RepliesViewController {
             perform(#selector(handleLogOut))
             completion(false)
         } else {
+            print("This user exists")
             completion(true)
         }
     }

@@ -1,10 +1,3 @@
-//
-//  ViewController.swift
-//  TopFive
-//
-//  Created by Robert Rozenvasser on 3/29/17.
-//  Copyright © 2017 Robert Rozenvasser. All rights reserved.
-//
 
 import UIKit
 
@@ -14,6 +7,7 @@ final class HomeViewController: UIViewController {
     fileprivate let cellID = "cellID"
     fileprivate let dataShare = ArticleDataStorage.articleDataStore
     fileprivate var sources = [Source]()
+    fileprivate var viewModel: NewsTableViewModel!
     
     required init(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)!
@@ -32,17 +26,12 @@ final class HomeViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = UIColor.white
         setupTableView()
-        updateTableViewWithArticlesFrom(sources: sources)
+        viewModel = NewsTableViewModel(sources: sources, reloadTableViewCallback: reloadTableViewCallback)
     }
     
-    func updateTableViewWithArticlesFrom(sources: [Source]) {
-        dataShare.createArticlesFor(sources) { (isSuccess) in
-            if isSuccess {
-                self.dataShare.allArticles.sort(by: { $0.publishedDate! > $1.publishedDate! })
-                DispatchQueue.main.async {
-                    self.tableView.reloadData()
-                }
-            }
+    func reloadTableViewCallback() {
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
         }
     }
 
@@ -59,20 +48,16 @@ extension HomeViewController: UITableViewDataSource, UITableViewDelegate {
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.separatorStyle = .none
         tableView.translatesAutoresizingMaskIntoConstraints = false
-        
-        tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
-        tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
-        tableView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
-        tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+        tableView.constrainEdges(to: view)
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return dataShare.allArticles.count
+        return viewModel.allArticles.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: cellID, for: indexPath) as! HomeArticleCell
-        cell.article = dataShare.allArticles[indexPath.row]
+        cell.article = viewModel.allArticles[indexPath.row]
         cell.delegate = self
         cell.selectionStyle = UITableViewCellSelectionStyle.none
         return cell
@@ -100,5 +85,7 @@ extension HomeViewController: LoadViewControllerDelegate {
     }
     
 }
+
+
 
 

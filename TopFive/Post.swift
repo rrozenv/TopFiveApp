@@ -20,6 +20,7 @@ class Post {
     
     init(snapshot: FIRDataSnapshot) {
         let dict = snapshot.value as? [String: String]
+        print("\(snapshot.value)")
         self.userName = dict?["userName"] ?? ""
         self.content = dict?["content"] ?? ""
     }

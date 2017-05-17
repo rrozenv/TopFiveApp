@@ -65,6 +65,7 @@ extension FirebaseManager {
             print("Snapshot: \(snapshot)")
             var posts = [Post]()
             for item in snapshot.children {
+                print("item \(item)")
                 let post = Post(snapshot: item as! FIRDataSnapshot)
                 posts.append(post)
             }
@@ -73,12 +74,74 @@ extension FirebaseManager {
         
     }
     
-    class func createPost(articleID: String, userId: String, userName: String, content: String, articleReplies: Int) {
+    class func fetchReplyCount(articleID: String, completion: @escaping (Int) -> ()) {
+        
+        articlesRef.observe(.value, with: { (snapshot) in
+            
+            if snapshot.hasChild(articleID) {
+                
+                articlesRef.child(articleID).observe(.value, with: { (snapshotTwo) in
+                    
+                    if snapshotTwo.hasChild("numberOfReplies") {
+                        
+                        articlesRef.child(articleID).child("numberOfReplies").observe(.value, with: { (snapshotThree) in
+                            
+                            if let replies = snapshotThree.value as? Int {
+                                completion(replies)
+                            }
+                            
+                        })
+                        
+                    }
+                    
+                })
+            } else {
+                completion(0)
+            }
+        })
+    }
+    
+    class func fetchLikeCount(articleID: String, completion: @escaping (Int) -> ()) {
+        print("Getting Like Counts")
+        articlesRef.observe(.value, with: { (snapshot) in
+            
+            if snapshot.hasChild(articleID) {
+                
+                articlesRef.child(articleID).observe(.value, with: { (snapshotTwo) in
+                    
+                    if snapshotTwo.hasChild("numberOfLikes") {
+                        
+                        articlesRef.child(articleID).child("numberOfLikes").observe(.value, with: { (snapshotThree) in
+                            
+                            if let replies = snapshotThree.value as? Int {
+                                completion(replies)
+                            }
+                            
+                        })
+                        
+                    }
+                    
+                })
+            } else {
+                completion(0)
+            }
+        })
+    }
+    
+    class func updateReplyCount(articleID: String, articleReplies: Int) {
+        articlesRef.child(articleID).child("numberOfReplies").setValue(articleReplies)
+    }
+    
+    class func updateLikeCount(articleID: String, articleReplies: Int) {
+        articlesRef.child(articleID).child("numberOfLikes").setValue(articleReplies)
+    }
+    
+    class func createPost(articleID: String, userId: String, userName: String, content: String) {
         let values = ["userId": userId, "userName": userName, "content": content, "articleID": articleID]
         postsRef.childByAutoId().setValue(values)
         usersRef.child(userId).child("posts").childByAutoId().setValue(content)
         articlesRef.child(articleID).childByAutoId().updateChildValues(values)
-//        articlesRef.child(articleID).child("numberOfReplies").setValue(articleReplies)
+        //articlesRef.child(articleID).child("numberOfReplies").setValue("1")
     }
 }
 

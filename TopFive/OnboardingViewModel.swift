@@ -9,8 +9,24 @@
 import Foundation
 import UIKit
 
-class OnboardingViewModel {
+final class OnboardingViewModel {
     
+    var selectedCategories = [CategoryView]()
+    
+    func didSelectCategory(view: CategoryView) -> UIColor {
+        if view.isSelected {
+            view.isSelected = false
+            if let index = selectedCategories.index(of: view) {
+                selectedCategories.remove(at: index)
+            }
+            return UIColor.blue
+        } else {
+            view.isSelected = true
+            selectedCategories.append(view)
+            return UIColor.yellow
+        }
+    }
+        
     func createCategories() -> [CategoryView] {
         let categories = [
             CategoryView(name: "Science", sources: [.techCrunch]),
@@ -20,9 +36,9 @@ class OnboardingViewModel {
         return categories
     }
     
-    func storeUserSelectedCategories(_ categories: [CategoryView]) {
+    func storeUserSelectedCategories() {
         var selected = [String]()
-        categories.forEach { selected.append($0.name) }
+        selectedCategories.forEach { selected.append($0.name) }
         UserDefaults.standard.set(selected, forKey: UserDefaultsKeys.sources)
     }
     

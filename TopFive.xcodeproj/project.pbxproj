@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		7BCFCB84FE3E07B3C22E17EA /* Pods_TopFive.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BFF4F6D12CBEB0561CA03DB6 /* Pods_TopFive.framework */; };
+		980803741ECA388400233463 /* Source.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980803731ECA388400233463 /* Source.swift */; };
 		981A20401EB91D9200355D80 /* APIResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 981A203F1EB91D9200355D80 /* APIResponse.swift */; };
 		985B2FB71E8D724200EC635B /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 985B2FB61E8D724200EC635B /* WebViewController.swift */; };
 		985B2FB91E8D80A400EC635B /* RepliesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 985B2FB81E8D80A400EC635B /* RepliesViewController.swift */; };
@@ -29,6 +30,7 @@
 		98931B061E8EC73D00848206 /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98931B051E8EC73D00848206 /* Post.swift */; };
 		98931B081E8ECEFA00848206 /* FirebaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98931B071E8ECEFA00848206 /* FirebaseManager.swift */; };
 		98931B0A1E8ECF0E00848206 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98931B091E8ECF0E00848206 /* LoginViewController.swift */; };
+		98C04A741ECCE97500CE223E /* ArticleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98C04A731ECCE97500CE223E /* ArticleView.swift */; };
 		98C054671EC6104F000770D6 /* CategoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98C054661EC6104F000770D6 /* CategoryView.swift */; };
 		98C0546F1EC612D6000770D6 /* GeneralExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98C0546E1EC612D6000770D6 /* GeneralExtensions.swift */; };
 		98C054711EC614DE000770D6 /* CategoriesTabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98C054701EC614DE000770D6 /* CategoriesTabViewController.swift */; };
@@ -36,11 +38,13 @@
 		98EBB8671EC39C9D0057BA86 /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98EBB8661EC39C9D0057BA86 /* OnboardingViewController.swift */; };
 		98EBB8691EC39CE40057BA86 /* ScrollingStackViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98EBB8681EC39CE40057BA86 /* ScrollingStackViewController.swift */; };
 		98F9CA6E1E90174A0025F81A /* ReplyCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98F9CA6D1E90174A0025F81A /* ReplyCell.swift */; };
+		98FB13A21EC79FAD0066B676 /* NewsTableViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98FB13A11EC79FAD0066B676 /* NewsTableViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		3F43116340EE3845CB901D8D /* Pods-TopFive.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TopFive.debug.xcconfig"; path = "Pods/Target Support Files/Pods-TopFive/Pods-TopFive.debug.xcconfig"; sourceTree = "<group>"; };
 		585433128BB633EC4A0E4E7A /* Pods-TopFive.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TopFive.release.xcconfig"; path = "Pods/Target Support Files/Pods-TopFive/Pods-TopFive.release.xcconfig"; sourceTree = "<group>"; };
+		980803731ECA388400233463 /* Source.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Source.swift; sourceTree = "<group>"; };
 		981A203F1EB91D9200355D80 /* APIResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIResponse.swift; sourceTree = "<group>"; };
 		985B2FB61E8D724200EC635B /* WebViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
 		985B2FB81E8D80A400EC635B /* RepliesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RepliesViewController.swift; sourceTree = "<group>"; };
@@ -64,6 +68,7 @@
 		98931B051E8EC73D00848206 /* Post.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
 		98931B071E8ECEFA00848206 /* FirebaseManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FirebaseManager.swift; sourceTree = "<group>"; };
 		98931B091E8ECF0E00848206 /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
+		98C04A731ECCE97500CE223E /* ArticleView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArticleView.swift; sourceTree = "<group>"; };
 		98C054661EC6104F000770D6 /* CategoryView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CategoryView.swift; sourceTree = "<group>"; };
 		98C0546E1EC612D6000770D6 /* GeneralExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GeneralExtensions.swift; sourceTree = "<group>"; };
 		98C054701EC614DE000770D6 /* CategoriesTabViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CategoriesTabViewController.swift; sourceTree = "<group>"; };
@@ -71,6 +76,7 @@
 		98EBB8661EC39C9D0057BA86 /* OnboardingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnboardingViewController.swift; sourceTree = "<group>"; };
 		98EBB8681EC39CE40057BA86 /* ScrollingStackViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScrollingStackViewController.swift; sourceTree = "<group>"; };
 		98F9CA6D1E90174A0025F81A /* ReplyCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReplyCell.swift; sourceTree = "<group>"; };
+		98FB13A11EC79FAD0066B676 /* NewsTableViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewsTableViewModel.swift; sourceTree = "<group>"; };
 		BFF4F6D12CBEB0561CA03DB6 /* Pods_TopFive.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TopFive.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -116,6 +122,7 @@
 		985B2FB21E8D590A00EC635B /* Networking */ = {
 			isa = PBXGroup;
 			children = (
+				981A203F1EB91D9200355D80 /* APIResponse.swift */,
 				986E75471E8C63D400051B6A /* APIManager.swift */,
 				98931B071E8ECEFA00848206 /* FirebaseManager.swift */,
 			);
@@ -125,10 +132,9 @@
 		985B2FB31E8D591A00EC635B /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				98931B051E8EC73D00848206 /* Post.swift */,
 				986E75451E8C63AE00051B6A /* Article.swift */,
-				986B51A61E8C6558002241AB /* ArticleDataStorage.swift */,
-				981A203F1EB91D9200355D80 /* APIResponse.swift */,
+				980803731ECA388400233463 /* Source.swift */,
+				98931B051E8EC73D00848206 /* Post.swift */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -152,6 +158,7 @@
 		985B2FB51E8D593000EC635B /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				98C04A731ECCE97500CE223E /* ArticleView.swift */,
 				98EBB8681EC39CE40057BA86 /* ScrollingStackViewController.swift */,
 				98C054661EC6104F000770D6 /* CategoryView.swift */,
 				986B51A81E8C6685002241AB /*  HomeArticleCell.swift */,
@@ -241,6 +248,8 @@
 			isa = PBXGroup;
 			children = (
 				986E75331E8C513600051B6A /* NewsTableViewController.swift */,
+				98FB13A11EC79FAD0066B676 /* NewsTableViewModel.swift */,
+				986B51A61E8C6558002241AB /* ArticleDataStorage.swift */,
 			);
 			name = "News Table View Controller";
 			sourceTree = "<group>";
@@ -395,6 +404,7 @@
 			files = (
 				98F9CA6E1E90174A0025F81A /* ReplyCell.swift in Sources */,
 				98EBB8691EC39CE40057BA86 /* ScrollingStackViewController.swift in Sources */,
+				98FB13A21EC79FAD0066B676 /* NewsTableViewModel.swift in Sources */,
 				98931B081E8ECEFA00848206 /* FirebaseManager.swift in Sources */,
 				986B51A71E8C6558002241AB /* ArticleDataStorage.swift in Sources */,
 				98EBB8671EC39C9D0057BA86 /* OnboardingViewController.swift in Sources */,
@@ -406,10 +416,12 @@
 				986E754A1E8C63FE00051B6A /* Secrets.swift in Sources */,
 				981A20401EB91D9200355D80 /* APIResponse.swift in Sources */,
 				986D18381EC50C2F008426CB /* ShareViewController.swift in Sources */,
+				980803741ECA388400233463 /* Source.swift in Sources */,
 				986D18321EC4BEF0008426CB /* OnboardingViewModel.swift in Sources */,
 				986E75341E8C513600051B6A /* NewsTableViewController.swift in Sources */,
 				98C054711EC614DE000770D6 /* CategoriesTabViewController.swift in Sources */,
 				986E75321E8C513600051B6A /* AppDelegate.swift in Sources */,
+				98C04A741ECCE97500CE223E /* ArticleView.swift in Sources */,
 				98C0546F1EC612D6000770D6 /* GeneralExtensions.swift in Sources */,
 				985B2FB91E8D80A400EC635B /* RepliesViewController.swift in Sources */,
 				986B51A91E8C6685002241AB /*  HomeArticleCell.swift in Sources */,

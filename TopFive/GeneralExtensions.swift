@@ -2,6 +2,19 @@
 import Foundation
 import UIKit
 
+extension String {
+    func makeFirebaseString() -> String {
+        let arrCharacterToReplace = [".","#","$","[","]"]
+        var finalString = self
+        
+        for character in arrCharacterToReplace{
+            finalString = finalString.replacingOccurrences(of: character, with: " ")
+        }
+        
+        return finalString
+    }
+}
+
 enum ScrollDirection {
     case horizontal, vertical
 }

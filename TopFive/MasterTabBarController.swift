@@ -13,10 +13,7 @@ class MasterTabBarController: UIViewController {
     
     fileprivate var sources = [Source]()
     
-    private lazy var homeViewController: HomeViewController = {
-        var viewController = HomeViewController(sources: self.sources)
-        return viewController
-    }()
+    private var homeViewController: HomeViewController!
     
     private lazy var shareViewController: ShareViewController = {
         var viewController = ShareViewController()
@@ -42,13 +39,22 @@ class MasterTabBarController: UIViewController {
     
     override func viewDidLoad() {
         view.backgroundColor = UIColor.white
-        fetchUserSources()
         tabBarView = TabBarView()
         setupTabBarView()
-        didPressTabButton(tabBarView.homeButton)
+        fetchUserSources()
+        homeViewController = HomeViewController(sources: self.sources)
+        add(asChildViewController: homeViewController)
+        tabBarView.homeButton.setImage(#imageLiteral(resourceName: "ic_home_tapped"), for: .normal)
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        //fetchUserSources()
+        //homeViewController = HomeViewController(sources: self.sources)
     }
     
     func fetchUserSources() {
+        self.sources.removeAll()
         if let userSelectedSources = UserDefaults.standard.array(forKey: UserDefaultsKeys.sources) as? [String] {
             userSelectedSources.forEach({ (stringSource) in
                 switch stringSource {
@@ -115,7 +121,6 @@ class MasterTabBarController: UIViewController {
             sender.setImage(#imageLiteral(resourceName: "ic_categoriest_tapped"), for: .normal)
         default: print("Not a valid tag")
         }
-        
     }
 
 }

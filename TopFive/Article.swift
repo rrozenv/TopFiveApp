@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-struct Article {
+final class Article {
     let source: Source?
     var id: String
     var author: String
@@ -19,6 +19,8 @@ struct Article {
     var urlToImage: String
     var publishedAt: String
     var numberOfReplies: Int = 0
+    var numberOfHearts: Int = 0
+    var isLiked = false
     var publishedDate: Date? {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ"
@@ -50,7 +52,7 @@ struct Article {
         
         self.publishedAt = publishedAt
         self.author = author
-        self.id = "\(publishedAt) + \(author)"
+        self.id = ("\(publishedAt) + \(author)").makeFirebaseString()
         self.title = title
         self.description = description
         self.url = url
