@@ -18,9 +18,12 @@ class Post {
         self.content = content
     }
     
-    init(snapshot: FIRDataSnapshot) {
-        let dict = snapshot.value as? [String: String]
-        self.userName = dict?["userName"] ?? ""
-        self.content = dict?["content"] ?? ""
+    init?(snapshot: FIRDataSnapshot) {
+        guard let dict = snapshot.value as? [String: String] else { return nil }
+        guard let userName = dict["userName"] else { return nil }
+        guard let content = dict["content"] else { return nil }
+        self.userName = userName
+        self.content = content
     }
+    
 }

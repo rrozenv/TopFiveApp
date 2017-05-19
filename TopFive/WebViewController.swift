@@ -27,13 +27,11 @@ class WebViewController: UIViewController {
     
     func setupWebView() {
         view.addSubview(webViewTest)
-        
         webViewTest.translatesAutoresizingMaskIntoConstraints = false
         webViewTest.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
         webViewTest.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
-        webViewTest.topAnchor.constraint(equalTo: topLayoutGuide.bottomAnchor).isActive = true
+        webViewTest.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
         webViewTest.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
     }
-
 
 }

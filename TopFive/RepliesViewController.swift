@@ -1,10 +1,3 @@
-//
-//  RepliesViewController.swift
-//  TopFive
-//
-//  Created by Robert Rozenvasser on 3/30/17.
-//  Copyright © 2017 Robert Rozenvasser. All rights reserved.
-//
 
 import Foundation
 import UIKit
@@ -40,12 +33,13 @@ class RepliesViewController: UIViewController {
     var article: Article! {
         didSet {
             self.articleID = article.id
-            articleImage.image = article.image
-            titleLabel.text = article.title
+            titleLabel.text = article.title.capitalized
+            articleImage.setImage(urlString: article.urlToImage)
         }
     }
     
     weak var delegate: LoadViewControllerDelegate?
+    var currentReplyCount: Int = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -61,13 +55,13 @@ class RepliesViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        if let articleID = article.id {
-            
-            FirebaseManager.fetchPosts(articleID: articleID, completion: { (posts) in
-                self.posts = posts
-                self.tableView.reloadData()
-            })
-            
+        FirebaseManager.fetchPosts(articleID: article.id, completion: { (posts) in
+            self.posts = posts
+            self.tableView.reloadData()
+        })
+        
+        FirebaseManager.fetchReplyCount(articleID: article.id) { (replyCount) in
+            self.currentReplyCount = replyCount
         }
         
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: Notification.Name.UIKeyboardWillShow, object: nil)
@@ -112,13 +106,14 @@ extension RepliesViewController: UITextFieldDelegate {
         textFieldBottomConstraint.isActive = true
     }
     
-    func keyboardWillShow(_ notification:Notification) {
+    func keyboardWillShow(_ notification: Notification) {
         
         checkIfUserIsLoggedIn { (isLoggedIn) in
-            
             if isLoggedIn {
                 self.adjustingHeight(true, notification: notification)
-                self.userName = UserDefaults.standard.string(forKey: "userName")!
+                if let userName = UserDefaults.standard.string(forKey: "userName") {
+                    self.userName = userName
+                }
                 self.curretUserUID = FIRAuth.auth()?.currentUser?.uid
                 
                 let tap: UITapGestureRecognizer = UITapGestureRecognizer(
@@ -152,9 +147,12 @@ extension RepliesViewController: UITextFieldDelegate {
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        if let userId = curretUserUID, let postText = postTextField.text, let articleID = article.id {
-            self.article.numberOfReplies += 1
-            FirebaseManager.createPost(articleID: articleID, userId: userId, userName: userName!, content: postText, articleReplies: article.numberOfReplies)
+        if let userId = curretUserUID, let postText = postTextField.text {
+            currentReplyCount += 1
+            FirebaseManager.updateReplyCount(articleID: article.id, articleReplies: currentReplyCount)
+            FirebaseManager.createPost(articleID: article.id, userId: userId, userName: userName!, content: postText)
+            article.numberOfReplies += 1
+            NotificationCenter.default.post(name: Notification.Name("replyCount"), object: nil)
             textField.resignFirstResponder()
             postTextField.text = nil
             return true
@@ -190,7 +188,7 @@ extension RepliesViewController {
         borderView.translatesAutoresizingMaskIntoConstraints = false
         borderView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
         borderView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
-        borderView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+        borderView.topAnchor.constraint(equalTo: self.topLayoutGuide.bottomAnchor).isActive = true
         borderView.heightAnchor.constraint(equalToConstant: 6.0).isActive = true
     }
     
@@ -268,6 +266,7 @@ extension RepliesViewController {
             perform(#selector(handleLogOut))
             completion(false)
         } else {
+            print("This user exists")
             completion(true)
         }
     }
@@ -280,22 +279,5 @@ extension RepliesViewController {
 
 }
 
-class TextField: UITextField {
-    
-    let padding = UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 15);
-    
-    override func textRect(forBounds bounds: CGRect) -> CGRect {
-        return UIEdgeInsetsInsetRect(bounds, padding)
-    }
-    
-    override func placeholderRect(forBounds bounds: CGRect) -> CGRect {
-        return UIEdgeInsetsInsetRect(bounds, padding)
-    }
-    
-    override func editingRect(forBounds bounds: CGRect) -> CGRect {
-        return UIEdgeInsetsInsetRect(bounds, padding)
-    }
-    
-}
 
 

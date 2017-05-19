@@ -60,26 +60,82 @@ class FirebaseManager {
 extension FirebaseManager {
     
     class func fetchPosts(articleID: String, completion: @escaping ([Post]) -> ()) {
-        
-        articlesRef.child(articleID).observe(.value, with: { (snapshot) in
-            print("Snapshot: \(snapshot)")
+        articlesRef.child(articleID).child("posts").observe(.value, with: { (snapshot) in
             var posts = [Post]()
             for item in snapshot.children {
-                let post = Post(snapshot: item as! FIRDataSnapshot)
-                posts.append(post)
+                print("item: \(item)")
+                if let post = Post(snapshot: item as! FIRDataSnapshot) {
+                    posts.append(post)
+                }
             }
             completion(posts)
         })
-        
     }
     
-    class func createPost(articleID: String, userId: String, userName: String, content: String, articleReplies: Int) {
+    class func fetchReplyCount(articleID: String, completion: @escaping (Int) -> ()) {
+        articlesRef.child(articleID).child("numberOfReplies").observe(.value, with: { (snapshot) in
+            if let replies = snapshot.value as? Int {
+                completion(replies)
+            } else {
+                completion(0)
+            }
+        })
+    }
+
+    class func fetchLikeCount(articleID: String, completion: @escaping (Int) -> ()) {
+        articlesRef.child(articleID).child("numberOfLikes").observe(.value, with: { (snapshot) in
+            if let likes = snapshot.value as? Int {
+                completion(likes)
+            } else {
+                completion(0)
+            }
+        })
+    }
+    
+    class func updateReplyCount(articleID: String, articleReplies: Int) {
+        articlesRef.child(articleID).child("numberOfReplies").setValue(articleReplies)
+    }
+    
+    class func updateLikeCount(articleID: String, articleReplies: Int) {
+        articlesRef.child(articleID).child("numberOfLikes").setValue(articleReplies)
+    }
+    
+    class func createPost(articleID: String, userId: String, userName: String, content: String) {
         let values = ["userId": userId, "userName": userName, "content": content, "articleID": articleID]
         postsRef.childByAutoId().setValue(values)
         usersRef.child(userId).child("posts").childByAutoId().setValue(content)
-        articlesRef.child(articleID).childByAutoId().updateChildValues(values)
-//        articlesRef.child(articleID).child("numberOfReplies").setValue(articleReplies)
+        articlesRef.child(articleID).child("posts").childByAutoId().updateChildValues(values)
     }
 }
+
+
+
+//        articlesRef.observe(.value, with: { (snapshot) in
+//
+//            if snapshot.hasChild(articleID) {
+//
+//                articlesRef.child(articleID).observe(.value, with: { (snapshotTwo) in
+//
+//                    if snapshotTwo.hasChild("numberOfLikes") {
+//
+//                        articlesRef.child(articleID).child("numberOfLikes").observe(.value, with: { (snapshotThree) in
+//
+//                            if let replies = snapshotThree.value as? Int {
+//                                completion(replies)
+//                            } else {
+//                                completion(0)
+//                            }
+//
+//                        })
+//
+//                    } else {
+//                        completion(0)
+//                    }
+//
+//                })
+//            } else {
+//                completion(0)
+//            }
+//        })
 
 
