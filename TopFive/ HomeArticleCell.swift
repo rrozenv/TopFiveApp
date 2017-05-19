@@ -7,10 +7,6 @@ protocol LoadViewControllerDelegate: class {
     func reloadTableView()
 }
 
-protocol ReplyCountDelegate: class {
-    func updateReplyCount()
-}
-
 class HomeArticleCell: UITableViewCell {
     
     var articleView = ArticleView()
@@ -20,7 +16,6 @@ class HomeArticleCell: UITableViewCell {
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         commonInit()
-        
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -29,51 +24,67 @@ class HomeArticleCell: UITableViewCell {
     }
     
     func commonInit() {
+        setupArticleView()
         NotificationCenter.default.addObserver(self, selector: #selector(updateReplyCount), name: NSNotification.Name("replyCount"), object: nil)
-        contentView.addSubview(articleView)
-        articleView.translatesAutoresizingMaskIntoConstraints = false
-        articleView.constrainEdges(to: self.contentView)
     }
 
     var article: Article! {
         didSet {
             articleView.createArticle(article: article)
+            articleView.webViewButton.addTarget(self, action: #selector(didPressWebviewButton), for: .touchUpInside)
             articleView.replyButton.addTarget(self, action: #selector(didPressReplyButton), for: .touchUpInside)
             articleView.heartButton.addTarget(self, action: #selector(didPressLikeButton), for: .touchUpInside)
-            currentLikeCount = article.numberOfHearts
+            //currentLikeCount = article.numberOfHearts
         }
+    }
+    
+    func setupArticleView() {
+        articleView = ArticleView()
+        contentView.addSubview(articleView)
+        articleView.translatesAutoresizingMaskIntoConstraints = false
+        articleView.constrainEdges(to: self.contentView)
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
     }
     
 }
 
+//MARK: Actions 
+
 extension HomeArticleCell {
     
     func didPressLikeButton() {
+        //TODO: Add Heart Animation
         if !article.isLiked {
-            currentLikeCount += 1
             article.isLiked = true
             article.numberOfHearts += 1
-            FirebaseManager.updateLikeCount(articleID: article.id, articleReplies: currentLikeCount)
-            articleView.heartsLabel.text = "\(currentLikeCount) likes"
+            FirebaseManager.updateLikeCount(articleID: article.id, articleReplies: article.numberOfHearts)
+            articleView.heartsLabel.text = "\(article.numberOfHearts) likes"
         } else {
-            currentLikeCount -= 1
             article.isLiked = false
             article.numberOfHearts -= 1
-            FirebaseManager.updateLikeCount(articleID: article.id, articleReplies: currentLikeCount)
-            articleView.heartsLabel.text = "\(currentLikeCount) likes"
+            FirebaseManager.updateLikeCount(articleID: article.id, articleReplies: article.numberOfHearts)
+            articleView.heartsLabel.text = "\(article.numberOfHearts) likes"
         }
     }
     
-    func updateReplyCount() {
-        articleView.repliesLabel.text = "\(article.numberOfReplies) replies"
-    }
-    
-    func didPressButton(sender: UIButton) {
+    func didPressWebviewButton(sender: UIButton) {
         delegate?.loadWebView(self.article)
     }
     
     func didPressReplyButton(sender: UIButton) {
         delegate?.loadRepliesViewController(self.article)
+    }
+}
+
+//MARK: Notification Center Action
+
+extension HomeArticleCell {
+    
+    func updateReplyCount() {
+        articleView.repliesLabel.text = "\(article.numberOfReplies) replies"
     }
     
 }

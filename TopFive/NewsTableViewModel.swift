@@ -7,13 +7,22 @@ class NewsTableViewModel {
     var reloadTableViewCallback: () -> Void!
     var sources = [Source]()
     var allArticles = [Article]()
+    let myGroup = DispatchGroup()
+    var sourceCounter = 0
+
 
     init(sources: [Source], reloadTableViewCallback: @escaping () -> Void) {
         self.sources = sources
         self.reloadTableViewCallback = reloadTableViewCallback
-        createArticlesFor(sources) { 
-            self.allArticles.sort(by: { $0.publishedDate! > $1.publishedDate! })
-            self.reloadTableViewCallback()
+        createArticlesFor(sources) {
+            if self.sourceCounter == sources.count {
+                self.fetchReplyCounts(articles: self.allArticles, completion: {
+                    self.fetchLikeCounts(articles: self.allArticles, completion: { 
+                         self.reloadTableViewCallback()
+                    })
+                })
+                self.allArticles.sort(by: { $0.publishedDate! > $1.publishedDate! })
+            }
         }
     }
     
@@ -21,30 +30,23 @@ class NewsTableViewModel {
         self.allArticles.removeAll()
         sources.forEach { (source) in
             APIManager.getRequestFor(source) { [weak self] (APIResponse) in
-                self?.checkAPIResponse(APIResponse) { [weak self] (articles) in
-                    if let articles = articles {
-                        self?.allArticles += articles
-                        completion()
-                    }
+                switch APIResponse {
+                case .success(let JSON):
+                    print("Creating articles for \(String(describing: source))")
+                    self?.createArticleObjectsWith(JSON: JSON, completion: { (articles) in
+                        if let articles = articles {
+                            print("Adding \(articles.count) articles created for \(source) to array")
+                            self?.sourceCounter += 1
+                            self?.allArticles += articles
+                            completion()
+                        }
+                    })
+                case .badJSONRequest(_):
+                    completion()
+                default:
+                    completion()
                 }
             }
-        }
-    }
-    
-    private func checkAPIResponse(_ APIResponse: APIResponse, completion: ([Article]?) -> Void) {
-        switch APIResponse {
-        case .success(let JSON):
-            createArticleObjectsWith(JSON: JSON, completion: { (articles) in
-                if let articles = articles {
-                    fetchReplyCounts(articles: articles)
-                    fetchLikeCounts(articles: articles)
-                    completion(articles)
-                }
-            })
-        case .badJSONRequest(_):
-            completion(nil)
-        default:
-            completion(nil)
         }
     }
     
@@ -60,20 +62,49 @@ class NewsTableViewModel {
         !articles.isEmpty ? completion(articles) : completion(nil)
     }
     
-    private func fetchReplyCounts(articles: [Article]) {
+    private func fetchReplyCounts(articles: [Article], completion: @escaping () -> Void) {
+        print("Fetching replies for ALL \(articles.count) articles")
+        let articleCount = articles.count
+        var counter = 0
         for article in articles {
-            FirebaseManager.fetchReplyCount(articleID: article.id, completion: { (replyCount) in
-                article.numberOfReplies = replyCount
+            FirebaseManager.fetchReplyCount(articleID: article.id, completion: { (count) in
+                article.numberOfReplies = count
+                counter += 1
+                print("Got replies. \(counter)")
+                if counter == articleCount {
+                    completion()
+                }
             })
         }
     }
     
-    private func fetchLikeCounts(articles: [Article]) {
+    private func fetchLikeCounts(articles: [Article], completion: @escaping () -> Void) {
+        print("Fetching replies for ALL \(articles.count) articles")
+        let articleCount = articles.count
+        var counter = 0
         for article in articles {
-            FirebaseManager.fetchLikeCount(articleID: article.id, completion: { (likeCount) in
-                article.numberOfHearts = likeCount
+            FirebaseManager.fetchLikeCount(articleID: article.id, completion: { (count) in
+                article.numberOfHearts = count
+                counter += 1
+                if counter == articleCount {
+                    completion()
+                }
             })
         }
     }
 
+    
+
+    
+
+    
+
+    
+
+
+}
+
+enum Counts: String {
+    case numberOfReplies
+    case numberOfLikes
 }

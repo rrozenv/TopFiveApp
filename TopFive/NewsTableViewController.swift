@@ -27,9 +27,19 @@ final class HomeViewController: UIViewController {
         view.backgroundColor = UIColor.white
         setupTableView()
         viewModel = NewsTableViewModel(sources: sources, reloadTableViewCallback: reloadTableViewCallback)
+        print("News table view viewDidLoad called")
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+    }
+    
+    deinit {
+        print("News Table View is being deinitalized")
     }
     
     func reloadTableViewCallback() {
+        print("Im reloading")
         DispatchQueue.main.async {
             self.tableView.reloadData()
         }

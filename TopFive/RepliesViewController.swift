@@ -1,10 +1,3 @@
-//
-//  RepliesViewController.swift
-//  TopFive
-//
-//  Created by Robert Rozenvasser on 3/30/17.
-//  Copyright © 2017 Robert Rozenvasser. All rights reserved.
-//
 
 import Foundation
 import UIKit
@@ -46,7 +39,6 @@ class RepliesViewController: UIViewController {
     }
     
     weak var delegate: LoadViewControllerDelegate?
-    weak var replyDelegate: ReplyCountDelegate?
     var currentReplyCount: Int = 0
     
     override func viewDidLoad() {
@@ -64,14 +56,12 @@ class RepliesViewController: UIViewController {
         super.viewWillAppear(animated)
         
         FirebaseManager.fetchPosts(articleID: article.id, completion: { (posts) in
-            print("fetching posts")
             self.posts = posts
             self.tableView.reloadData()
         })
         
         FirebaseManager.fetchReplyCount(articleID: article.id) { (replyCount) in
             self.currentReplyCount = replyCount
-            print("just fetched reply count \(self.currentReplyCount)")
         }
         
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: Notification.Name.UIKeyboardWillShow, object: nil)
@@ -289,22 +279,5 @@ extension RepliesViewController {
 
 }
 
-class TextField: UITextField {
-    
-    let padding = UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 15);
-    
-    override func textRect(forBounds bounds: CGRect) -> CGRect {
-        return UIEdgeInsetsInsetRect(bounds, padding)
-    }
-    
-    override func placeholderRect(forBounds bounds: CGRect) -> CGRect {
-        return UIEdgeInsetsInsetRect(bounds, padding)
-    }
-    
-    override func editingRect(forBounds bounds: CGRect) -> CGRect {
-        return UIEdgeInsetsInsetRect(bounds, padding)
-    }
-    
-}
 
 

@@ -67,7 +67,6 @@ class MasterTabBarController: UIViewController {
                 }
             })
         }
-        print("I got \(self.sources.count) sources")
     }
     
     private func add(asChildViewController viewController: UIViewController) {

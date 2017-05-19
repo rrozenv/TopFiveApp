@@ -26,13 +26,13 @@ final class ArticleDataStorage {
         }
     }
     
-    func fetchReplyCounts(articles: [Article]) {
-        for article in articles {
-            FirebaseManager.fetchReplyCount(articleID: article.id, completion: { (replyCount) in
-                article.numberOfReplies = replyCount
-            })
-        }
-    }
+//    func fetchReplyCounts(articles: [Article]) {
+//        for article in articles {
+//            FirebaseManager.fetchReplyCount(articleID: article.id, completion: { (replyCount) in
+//                article.numberOfReplies = replyCount
+//            })
+//        }
+//    }
     
     private func checkAPIResponse(_ APIResponse: APIResponse, completion: (Bool) -> Void) {
         switch APIResponse {

@@ -10,7 +10,6 @@ final class ArticleView: UIView {
     var descriptionLabel = UILabel()
     let repliesLabel = UILabel()
     let heartsLabel = UILabel()
-
     
     //Generic properties
     var borderView = UIView()
